@@ -1,65 +1,143 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
 
 export default function Home() {
+  const [url, setUrl] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [hasResults, setHasResults] = useState(false);
+
+  const handleAnalyze = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!url) return;
+
+    setIsAnalyzing(true);
+    setHasResults(false);
+
+    // Simulate analysis delay
+    setTimeout(() => {
+      setIsAnalyzing(false);
+      setHasResults(true);
+    }, 2000);
+  };
+
+  const MOCK_CREATORS = [
+    {
+      name: "Alex Design",
+      handle: "@alexdesign",
+      niche: "UI/UX & Web Design",
+      followers: "120K",
+      engagement: "4.5%",
+      badge: "blue"
+    },
+    {
+      name: "Sarah Tech",
+      handle: "@sarahtech",
+      niche: "Frontend Dev",
+      followers: "85K",
+      engagement: "6.2%",
+      badge: "violet"
+    },
+    {
+      name: "Marcus Build",
+      handle: "@marcusbuild",
+      niche: "Startups & SaaS",
+      followers: "210K",
+      engagement: "3.8%",
+      badge: "red"
+    }
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div>
+      <div className="container">
+        <header className="header">
+          <div className="logo">Collab<span style={{ color: "var(--color-m-blue)" }}>Match</span></div>
+          <div>
+            <button className="btn btn--ghost">Sign In</button>
+          </div>
+        </header>
+
+        <main className="section">
+          <div className="accent-line" style={{ width: "60px", margin: "0 auto var(--space-6)" }}></div>
+          
+          <div className="hero-section">
+            <h1 className="text-hero">
+              Find Your Perfect <br />
+              <span style={{ color: "var(--color-m-blue)" }}>Collaboration</span>
+            </h1>
+            <p className="text-body" style={{ color: "var(--color-text-secondary)", fontSize: "var(--text-lg)" }}>
+              Enter the URL of your site or social account. Our engine will analyze your niche and find the most relevant content creators to amplify your brand.
+            </p>
+
+            <form className="search-container" onSubmit={handleAnalyze}>
+              <input
+                type="text"
+                placeholder="https://yourwebsite.com"
+                className="input search-input"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+              <button 
+                type="submit" 
+                className="btn btn--primary"
+                disabled={isAnalyzing}
+              >
+                {isAnalyzing ? "Analyzing..." : "Analyze"}
+              </button>
+            </form>
+          </div>
+
+          <div className="divider">
+            <span className="text-label" style={{ color: "var(--color-text-muted)" }}>Results</span>
+          </div>
+
+          {isAnalyzing && (
+            <div className="text-center" style={{ textAlign: "center", padding: "var(--space-8)" }}>
+              <div className="text-title fade-in">Scanning networks...</div>
+              <p className="text-body" style={{ color: "var(--color-text-muted)", marginTop: "var(--space-3)" }}>
+                Extracting niche data, finding related profiles, and calculating match scores.
+              </p>
+            </div>
+          )}
+
+          {hasResults && !isAnalyzing && (
+            <div className="grid fade-in">
+              {MOCK_CREATORS.map((creator, index) => (
+                <div key={index} className="card card--featured transition-base">
+                  <div className="creator-header">
+                    <div className="creator-avatar" />
+                    <div className="creator-info">
+                      <span className="text-body" style={{ fontWeight: "var(--weight-semi)" }}>{creator.name}</span>
+                      <span className="text-caption">{creator.handle}</span>
+                    </div>
+                  </div>
+                  
+                  <div style={{ marginBottom: "var(--space-4)" }}>
+                    <span className={`badge badge--${creator.badge}`}>{creator.niche}</span>
+                  </div>
+
+                  <div className="creator-stats">
+                    <div className="stat-item">
+                      <span className="stat-value">{creator.followers}</span>
+                      <span className="text-caption">Followers</span>
+                    </div>
+                    <div className="stat-item">
+                      <span className="stat-value">{creator.engagement}</span>
+                      <span className="text-caption">Engagement</span>
+                    </div>
+                  </div>
+
+                  <div className="action-row">
+                    <button className="btn btn--ghost" style={{ fontSize: "var(--text-xs)", padding: "var(--space-2) var(--space-3)" }}>View Profile</button>
+                    <button className="btn btn--primary" style={{ fontSize: "var(--text-xs)", padding: "var(--space-2) var(--space-3)" }}>Connect</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
